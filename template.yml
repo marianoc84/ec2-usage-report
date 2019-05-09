@@ -1,0 +1,28 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+Description: This application create a CFN dashboard with CPU and disks usage for every EC2 instances.
+Parameters: 
+    DashboardNameParameter: 
+      Type: String
+      Default: ec2-usage-report
+    WidgetMinHeightParameter:
+      Type: Integer
+      Default: 4
+    WidgetWidthParameter:
+      Type: Integer
+      Default: 12
+Resources:
+  helloworld:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: index.handler
+      Runtime: nodejs8.10
+      CodeUri: .
+      Description: This Lambda build the report's dashboard
+      MemorySize: 512
+      Timeout: 7
+    Environment:
+      Variables:
+        dashboard_name: !Ref DashboardNameParameter
+        widget_min_height: !Ref WidgetMinHeightParameter
+        widget_width: !Ref WidgetWidthParameter
