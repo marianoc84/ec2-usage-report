@@ -6,15 +6,17 @@ Parameters:
       Type: String
       Default: ec2-usage-report
     WidgetMinHeightParameter:
-      Type: Integer
+      Type: String
       Default: 4
     WidgetWidthParameter:
-      Type: Integer
+      Type: String
       Default: 12
 Resources:
-  helloworld:
+  
+  CreateDashboardFunction:
     Type: 'AWS::Serverless::Function'
     Properties:
+      FunctionName: create-dashboard
       Handler: index.handler
       Runtime: nodejs8.10
       CodeUri: .
@@ -26,3 +28,38 @@ Resources:
         dashboard_name: !Ref DashboardNameParameter
         widget_min_height: !Ref WidgetMinHeightParameter
         widget_width: !Ref WidgetWidthParameter
+
+  CreateDashboardRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          -
+            Effect: 'Allow'
+            Principal:
+              Service:
+                - 'lambda.amazonaws.com'
+            Action:
+              - 'sts:AssumeRole'
+      Path: '/'
+      Policies:
+        -
+          PolicyName: create-dashboard-policies
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              -
+                Sid: 'DescribeInstances'
+                Action:
+                  - 'ec2:DescribeInstances'
+                Effect: Allow
+                Resource:
+                  - '*'
+              -
+                Sid: 'PutDashboard'
+                Action:
+                  - 'cloudwatch:PutDashboard'
+                Effect: Allow
+                Resource:
+                  - '*'
