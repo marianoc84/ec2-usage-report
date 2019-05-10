@@ -2,32 +2,36 @@ AWSTemplateFormatVersion: '2010-09-09'
 Transform: 'AWS::Serverless-2016-10-31'
 Description: This application create a CFN dashboard with CPU and disks usage for every EC2 instances.
 Parameters: 
-    DashboardNameParameter: 
-      Type: String
-      Default: ec2-usage-report
-    WidgetMinHeightParameter:
-      Type: String
-      Default: 4
-    WidgetWidthParameter:
-      Type: String
-      Default: 12
+  DashboardNameParameter: 
+    Type: String
+    Default: ec2-usage-report
+    Description: 'The name of Dashboard in CloudWatch'
+  WidgetMinHeightParameter:
+    Type: Number
+    Default: 4
+    Description: 'The height of the smallest widget'
+  WidgetWidthParameter:
+    Type: Number
+    Default: 12
+    Description: "Widget's width"
 Resources:
-  
+
   CreateDashboardFunction:
     Type: 'AWS::Serverless::Function'
     Properties:
       FunctionName: create-dashboard
       Handler: index.handler
+      Role: !GetAtt CreateDashboardRole.Arn
       Runtime: nodejs8.10
       CodeUri: .
       Description: This Lambda build the report's dashboard
       MemorySize: 512
       Timeout: 7
-    Environment:
-      Variables:
-        dashboard_name: !Ref DashboardNameParameter
-        widget_min_height: !Ref WidgetMinHeightParameter
-        widget_width: !Ref WidgetWidthParameter
+      Environment:
+        Variables:
+          dashboard_name: !Ref DashboardNameParameter
+          widget_min_height: !Ref WidgetMinHeightParameter
+          widget_width: !Ref WidgetWidthParameter
 
   CreateDashboardRole:
     Type: 'AWS::IAM::Role'
@@ -43,6 +47,8 @@ Resources:
             Action:
               - 'sts:AssumeRole'
       Path: '/'
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
       Policies:
         -
           PolicyName: create-dashboard-policies
