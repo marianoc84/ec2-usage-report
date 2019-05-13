@@ -1,6 +1,20 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: 'AWS::Serverless-2016-10-31'
 Description: This application create a CFN dashboard with CPU and disks usage for every EC2 instances.
+
+Metadata:
+  AWS::ServerlessRepo::Application:
+    Name: ec2-usage-report
+    Description: This application create a CFN dashboard with CPU and disks usage for every EC2 instances.
+    Author: Mariano Calandra
+    SpdxLicenseId: MIT
+    LicenseUrl: LICENSE
+    ReadmeUrl: README.md
+    Labels: ['serverless', 'ec2-report']
+    HomePageUrl: https://github.com/marianoc84/ec2-usage-report
+    SemanticVersion: 1.0.12
+    SourceCodeUrl: https://github.com/marianoc84/ec2-usage-report
+
 Parameters: 
   DashboardNameParameter: 
     Type: String
@@ -14,8 +28,8 @@ Parameters:
     Type: Number
     Default: 12
     Description: "Widget's width"
-Resources:
 
+Resources:
   CreateDashboardFunction:
     Type: 'AWS::Serverless::Function'
     Properties:
