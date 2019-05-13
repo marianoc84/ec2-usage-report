@@ -15,7 +15,7 @@ exports.handler = async (event) => {
     return response;
 };
 
-function getMaxNumberOfVolumesPerInstance(instances) {
+function getBaseHeight(instances) {
     var max_number_of_volumes_per_instance = 1;
     
     for (var i = 0; i < instances.length; i++) {
@@ -25,11 +25,11 @@ function getMaxNumberOfVolumesPerInstance(instances) {
         }
     }
     
-    return max_number_of_volumes_per_instance;
+    return process.env.widget_min_height * max_number_of_volumes_per_instance;
 }
 
 async function buildDashboardTemplate(instances) {
-    process.env.widget_base_height = process.env.widget_min_height * getMaxNumberOfVolumesPerInstance(instances);
+    process.env.widget_base_height = getBaseHeight(instances);
     var dashboard = {};
     dashboard.widgets = [];
     
